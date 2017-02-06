@@ -14,11 +14,13 @@ Bytecode Outline plugin for Eclipse shows disassembled bytecode of current Java 
 
 ## Java Bytecode
 Here is a quick review in case you are not familiar with Java Bytecode. Java Bytecode is an intermediate code between Java source code and assembly code. Java source code `.java` file can be compiled into Bytecode `.class` file and run on where any computers have a Java Runtime Environment.
+
 [image]
+
 As mentioned before, ASM framework includes tools to help you translate between those codes. Bytecode Outline shows disassembled bytecode of current Java editor or class file. Unlike `javap`, ASMifier on compiled classes allows you to see how any given bytecode could be generated with ASM.
 
 ## Reflection and Instrumentation
-Reflection means the ability for a program to examine, introspect, and modify its own structure and behavior at runtime<sub>[1](http://www2.parc.com/csl/groups/sda/projects/reflection96/docs/malenfant/malenfant.pdf)</sub>.
+Reflection means the ability for a program to examine, introspect, and modify its own structure and behavior at runtime<sup>[[1](http://www2.parc.com/csl/groups/sda/projects/reflection96/docs/malenfant/malenfant.pdf)]</sup>.
 
 ## (Visitor Pattern)
 
