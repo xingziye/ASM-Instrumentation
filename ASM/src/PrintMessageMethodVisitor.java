@@ -42,7 +42,7 @@ public class PrintMessageMethodVisitor extends MethodVisitor {
 		// if annotation present, add logging to beginning of the method
 		System.out.println(methodName);
 		if (isImportant) {
-			mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "err", "Ljava/io/PrintStream;");
+			mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
 			mv.visitLdcInsn(parameterIndexes.toString());
 			mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
 			/*
