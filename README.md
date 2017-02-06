@@ -19,7 +19,7 @@ Here is a quick review in case you are not familiar with Java Bytecode. Java Byt
 
 For example, consider the following block of code:
 
-```Java
+```java
 public class Test
 {
     public static void main(String[] args) {
@@ -41,7 +41,7 @@ public class Test
 
 By using `javac` to compile and then `javap -c` to disassemble it, here is what we get:
 
-```Java
+```java
 public class Test {
   public Test();
     Code:
@@ -89,18 +89,18 @@ Let us say we are particularly interested in certain methods in main
 
 ```java
     BankTransactions bank = new BankTransactions();
-		for (int i = 0; i < 100; i++) {
-		    String accountId = "account" + i;
-		    bank.login("password", accountId, "Ashley");
-		    bank.unimportantProcessing(accountId);
-		    bank.withdraw(accountId, Double.valueOf(i));
-		}
+    for (int i = 0; i < 100; i++) {
+        String accountId = "account" + i;
+	bank.login("password", accountId, "Ashley");
+	bank.unimportantProcessing(accountId);
+	bank.withdraw(accountId, Double.valueOf(i));
+    }
 ```
 
 We want to keep track of those important behaviors such as login and withdraw. We can use Java annotation to mark those methods for later use.
 
 ```java
-@ImportantLog(fields = { "1", "2" })
+        @ImportantLog(fields = { "1", "2" })
 	public void login(String password, String accountId, String userName) {
 	    // login logic
 	}
@@ -115,11 +115,12 @@ By setting the premain flag in manifest file, our program will now start from pr
 ASM palys role here, when it visits any methods with annotation `@Important`, we record the field related to the method and modify any bytecode as you wish. Here we simply print any important methods' index of parameter that we care:
 
 ```java
-        System.out.println(methodName);
-		if (isImportant) {
-			mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "err", "Ljava/io/PrintStream;");
-			mv.visitLdcInsn(parameterIndexes.toString());
-			mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
+    System.out.println(methodName);
+    if (isImportant) {
+	mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "err", "Ljava/io/PrintStream;");
+	mv.visitLdcInsn(parameterIndexes.toString());
+	mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
+    }
 ```
 
 Notice that the process only happens when we first time load the method, so that the method name will only print once while the parameter index will print many times because we have already modified its bytecode in the method.
