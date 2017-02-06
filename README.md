@@ -20,8 +20,12 @@ Here is a quick review in case you are not familiar with Java Bytecode. Java Byt
 As mentioned before, ASM framework includes tools to help you translate between those codes. Bytecode Outline shows disassembled bytecode of current Java editor or class file. Unlike `javap`, ASMifier on compiled classes allows you to see how any given bytecode could be generated with ASM.
 
 ## Reflection and Instrumentation
-Reflection means the ability for a program to examine, introspect, and modify its own structure and behavior at runtime<sup>[[1](http://www2.parc.com/csl/groups/sda/projects/reflection96/docs/malenfant/malenfant.pdf)]</sup>.
+Reflection means the ability for a program to examine, introspect, and modify its own structure and behavior at runtime.<sup>[[1](http://www2.parc.com/csl/groups/sda/projects/reflection96/docs/malenfant/malenfant.pdf)]</sup> However refelction is not sufficient in many cases such as source in non-Java language. ASM framework uses a visitor-based approach to generate bytecode and drive transformations of existing classes. 
 
-## (Visitor Pattern)
+## Visitor Pattern
+ASM utilizes [Visitor Pattern] to accomplish dynamic dispatch on object and its behavior. 
+The Core package can be logically divided into two major parts:
+* Bytecode producers, such as a ClassReader or a custom class that can fire the proper sequence of calls to the methods of the above visitor classes.
+* Bytecode consumers, such as writers (ClassWriter, FieldWriter, MethodWriter, and AnnotationWriter), adapters (ClassAdapter and MethodAdapter), or any other classes implementing the above visitor interfaces.
 
 ## Demo
