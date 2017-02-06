@@ -15,10 +15,11 @@ Bytecode Outline plugin for Eclipse shows disassembled bytecode of current Java 
 ## Java Bytecode
 Here is a quick review in case you are not familiar with Java Bytecode. Java Bytecode is an intermediate code between Java source code and assembly code. Java source code `.java` file can be compiled into Bytecode `.class` file and run on where any computers have a Java Runtime Environment.
 
-[image]
+![Compile Java](https://raw.githubusercontent.com/xingziye/ASM-Instrumentation/master/ASM/image/21.jpg)
 
 For example, consider the following block of code:
-```Java
+
+```java
 public class Test
 {
     public static void main(String[] args) {
@@ -39,7 +40,8 @@ public class Test
 ```
 
 By using `javac` to compile and then `javap -c` to disassemble it, here is what we get:
-```Java
+
+```java
 public class Test {
   public Test();
     Code:
@@ -81,7 +83,62 @@ The Core package can be logically divided into two major parts:
 * Bytecode consumers, such as writers (ClassWriter, FieldWriter, MethodWriter, and AnnotationWriter), adapters (ClassAdapter and MethodAdapter), or any other classes implementing the above visitor interfaces.
 
 ## Demo
-`$ java -cp workspace/asm-all-5.2.jar -javaagent:ASM.jar BankTransactions`
+![Agent](https://raw.githubusercontent.com/xingziye/ASM-Instrumentation/master/ASM/image/72.jpg)
+We will use Java agent to monitor the main process and use ASM to modify the bytecode at running time.
+Let us say we are particularly interested in certain methods in main
+
+```java
+    BankTransactions bank = new BankTransactions();
+    for (int i = 0; i < 100; i++) {
+        String accountId = "account" + i;
+	bank.login("password", accountId, "Ashley");
+	bank.unimportantProcessing(accountId);
+	bank.withdraw(accountId, Double.valueOf(i));
+    }
+```
+
+We want to keep track of those important behaviors such as login and withdraw. We can use Java annotation to mark those methods for later use.
+
+```java
+        @ImportantLog(fields = { "1", "2" })
+	public void login(String password, String accountId, String userName) {
+	    // login logic
+	}
+	@ImportantLog(fields = { "0", "1" })
+	public void withdraw(String accountId, Double moneyToRemove) {
+	    // transaction logic
+	}
+```
+
+By setting the premain flag in manifest file, our program will now start from premain function. The premain method acts as a setup hook for the agent. It allows the agent to register a class transformer. When a class transformer is registered with the JVM, that transformer will receive the bytes of every class prior to the class being loaded in the JVM.
+
+ASM palys role here, when it visits any methods with annotation `@Important`, we record the field related to the method and modify any bytecode as you wish. Here we simply print any important methods' index of parameter that we care:
+
+```java
+    System.out.println(methodName);
+    if (isImportant) {
+	mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "err", "Ljava/io/PrintStream;");
+	mv.visitLdcInsn(parameterIndexes.toString());
+	mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
+    }
+```
+
+Notice that the process only happens when we first time load the method, so that the method name will only print once while the parameter index will print many times because we have already modified its bytecode in the method.
+
+```
+$ java -cp workspace/asm-all-5.2.jar -javaagent:ASM.jar BankTransactions
+Starting the agent
+<init>
+main
+unimportantProcessing
+login
+withdraw
+[1, 2]
+[0, 1]
+[1, 2]
+[0, 1]
+...
+```
 
 ## Reference
 * "ASM: a code manipulation tool to implement adaptable systems", E. Bruneton, R. Lenglet and T. Coupaye, Adaptable and extensible component systems, November 2002, Grenoble, France.
