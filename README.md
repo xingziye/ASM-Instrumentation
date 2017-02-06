@@ -6,7 +6,7 @@ ASM is an all purpose Java bytecode manipulation and analysis framework. It can 
 ## Environment
 The ASM bytecode manipulation framework is written in Java. Java Runtime Environment is required.
 
-### download ASM
+### Download ASM
 You can download the latest binary file from the [ObjectWeb Forge](http://forge.ow2.org/projects/asm/). This demo uses the version 5.2.
 
 ### Eclipse plugin
@@ -37,6 +37,7 @@ public class Test
     }
 }
 ```
+
 By using `javac` to compile and then `javap -c` to disassemble it, here is what we get:
 ```Java
 public class Test {
@@ -68,7 +69,6 @@ public class Test {
 }
 ```
 
-
 As mentioned before, ASM framework includes tools to help you translate between those codes. Bytecode Outline shows disassembled bytecode of current Java editor or class file. Unlike `javap`, ASMifier on compiled classes allows you to see how any given bytecode could be generated with ASM.
 
 ## Reflection and Instrumentation
@@ -81,6 +81,7 @@ The Core package can be logically divided into two major parts:
 * Bytecode consumers, such as writers (ClassWriter, FieldWriter, MethodWriter, and AnnotationWriter), adapters (ClassAdapter and MethodAdapter), or any other classes implementing the above visitor interfaces.
 
 ## Demo
+`$ java -cp workspace/asm-all-5.2.jar -javaagent:ASM.jar BankTransactions`
 
 ## Reference
 * "ASM: a code manipulation tool to implement adaptable systems", E. Bruneton, R. Lenglet and T. Coupaye, Adaptable and extensible component systems, November 2002, Grenoble, France.
