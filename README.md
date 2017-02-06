@@ -17,6 +17,58 @@ Here is a quick review in case you are not familiar with Java Bytecode. Java Byt
 
 [image]
 
+For example, consider the following block of code:
+```Java
+public class Test
+{
+    public static void main(String[] args) {
+        printOne();
+        printOne();
+        printTwo();
+    }
+    
+    public static void printOne() {
+        System.out.println("Hello World");
+    }
+    
+    public static void printTwo() {
+        printOne();
+        printOne();
+    }
+}
+```
+By using `javac` to compile and then `javap -c` to disassemble it, here is what we get:
+```Java
+public class Test {
+  public Test();
+    Code:
+       0: aload_0       
+       1: invokespecial #1                  // Method java/lang/Object."":()V
+       4: return        
+
+  public static void main(java.lang.String[]);
+    Code:
+       0: invokestatic  #2                  // Method printOne:()V
+       3: invokestatic  #2                  // Method printOne:()V
+       6: invokestatic  #3                  // Method printTwo:()V
+       9: return        
+
+  public static void printOne();
+    Code:
+       0: getstatic     #4                  // Field java/lang/System.out:Ljava/io/PrintStream;
+       3: ldc           #5                  // String Hello World
+       5: invokevirtual #6                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+       8: return        
+
+  public static void printTwo();
+    Code:
+       0: invokestatic  #2                  // Method printOne:()V
+       3: invokestatic  #2                  // Method printOne:()V
+       6: return        
+}
+```
+
+
 As mentioned before, ASM framework includes tools to help you translate between those codes. Bytecode Outline shows disassembled bytecode of current Java editor or class file. Unlike `javap`, ASMifier on compiled classes allows you to see how any given bytecode could be generated with ASM.
 
 ## Reflection and Instrumentation
