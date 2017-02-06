@@ -15,7 +15,7 @@ Bytecode Outline plugin for Eclipse shows disassembled bytecode of current Java 
 ## Java Bytecode
 Here is a quick review in case you are not familiar with Java Bytecode. Java Bytecode is an intermediate code between Java source code and assembly code. Java source code `.java` file can be compiled into Bytecode `.class` file and run on where any computers have a Java Runtime Environment.
 
-![Compile Java](https://github.com/xingziye/ASM-Instrumentation/ASM/image/21.jpg)
+![Compile Java](https://raw.githubusercontent.com/xingziye/ASM-Instrumentation/master/ASM/image/21.jpg)
 
 For example, consider the following block of code:
 
@@ -83,7 +83,7 @@ The Core package can be logically divided into two major parts:
 * Bytecode consumers, such as writers (ClassWriter, FieldWriter, MethodWriter, and AnnotationWriter), adapters (ClassAdapter and MethodAdapter), or any other classes implementing the above visitor interfaces.
 
 ## Demo
-![](https://github.com/xingziye/ASM-Instrumentation/ASM/image/72.jpg)
+![Agent](https://raw.githubusercontent.com/xingziye/ASM-Instrumentation/master/ASM/image/72.jpg)
 We will use Java agent to monitor the main process and use ASM to modify the bytecode at running time.
 Let us say we are particularly interested in certain methods in main
 
@@ -122,7 +122,7 @@ ASM palys role here, when it visits any methods with annotation `@Important`, we
 			mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
 ```
 
-Notice that the process only happens when we first time load the method, it will print many times because we have already modified its bytecode under.
+Notice that the process only happens when we first time load the method, so that the method name will only print once while the parameter index will print many times because we have already modified its bytecode in the method.
 
 ```
 $ java -cp workspace/asm-all-5.2.jar -javaagent:ASM.jar BankTransactions
