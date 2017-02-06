@@ -15,7 +15,7 @@ Bytecode Outline plugin for Eclipse shows disassembled bytecode of current Java 
 ## Java Bytecode
 Here is a quick review in case you are not familiar with Java Bytecode. Java Bytecode is an intermediate code between Java source code and assembly code. Java source code `.java` file can be compiled into Bytecode `.class` file and run on where any computers have a Java Runtime Environment.
 
-![Compile Java](/ASM/image/21.jpg)
+![Compile Java](https://github.com/xingziye/ASM-Instrumentation/blob/master/ASM/image/21.jpg)
 
 For example, consider the following block of code:
 ```Java
