@@ -79,8 +79,12 @@ Reflection means the ability for a program to examine, introspect, and modify it
 ## Visitor Pattern
 ASM utilizes [Visitor Pattern](https://en.wikipedia.org/wiki/Visitor_pattern) to accomplish dynamic dispatch on object and its behavior. 
 The Core package can be logically divided into two major parts:
+
 * Bytecode producers, such as a ClassReader or a custom class that can fire the proper sequence of calls to the methods of the above visitor classes.
-* Bytecode consumers, such as writers (ClassWriter, FieldWriter, MethodWriter, and AnnotationWriter), adapters (ClassAdapter and MethodAdapter), or any other classes implementing the above visitor interfaces.
+
+* Bytecode consumers, such as writers (ClassWriter, FieldWriter, MethodWriter, and AnnotationWriter), or any other classes implementing the above visitor interfaces.
+
+ASM ClassReader will call `accept()` to allow visitor to walk through itself. We can define our own visitor to override any methods in order to manipulate bytecode we desire to chanage.
 
 ## Demo
 ![Agent](https://raw.githubusercontent.com/xingziye/ASM-Instrumentation/master/ASM/image/72.jpg)
@@ -112,7 +116,7 @@ We want to keep track of those important behaviors such as login and withdraw. W
 
 By setting the premain flag in manifest file, our program will now start from premain function. The premain method acts as a setup hook for the agent. It allows the agent to register a class transformer. When a class transformer is registered with the JVM, that transformer will receive the bytes of every class prior to the class being loaded in the JVM.
 
-ASM palys role here, when it visits any methods with annotation `@Important`, we record the field related to the method and modify any bytecode as you wish. Here we simply print any important methods' index of parameter that we care:
+ASM palys role here, when visitor visits any methods with annotation `@Important`, we record the field related to the method and modify any bytecode as you wish. Here we simply print any important methods' index of parameter that we care:
 
 ```java
     System.out.println(methodName);
@@ -122,6 +126,7 @@ ASM palys role here, when it visits any methods with annotation `@Important`, we
 	mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
     }
 ```
+How do we know what to put in the visitor methods? As we mentioned above the ASMifier can let us know what ASM code needed to generate the target code.
 
 Notice that the process only happens when we first time load the method, so that the method name will only print once while the parameter index will print many times because we have already modified its bytecode in the method.
 
