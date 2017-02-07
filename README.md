@@ -103,20 +103,17 @@ Let us say we are particularly interested in certain methods in main
 
 We want to keep track of those important behaviors such as login and withdraw. We can use Java annotation to mark those methods for later use.
 
-```java
-        @ImportantLog(fields = { "1", "2" })
-	public void login(String password, String accountId, String userName) {
-	    // login logic
-	}
-	@ImportantLog(fields = { "0", "1" })
-	public void withdraw(String accountId, Double moneyToRemove) {
-	    // transaction logic
-	}
-```
-
 By setting the premain flag in manifest file, our program will now start from premain function. The premain method acts as a setup hook for the agent. It allows the agent to register a class transformer. When a class transformer is registered with the JVM, that transformer will receive the bytes of every class prior to the class being loaded in the JVM.
 
-ASM palys role here, when visitor visits any methods with annotation `@Important`, we record the field related to the method and modify any bytecode as you wish. Here we simply print any important methods' index of parameter that we care:
+```java
+    ClassReader reader = new ClassReader(classfileBuffer);
+    ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES);
+    ClassVisitor visitor = new LogMethodClassVisitor(writer, className);
+    reader.accept(visitor, 0);
+    return writer.toByteArray();
+```
+
+ASM palys role here, when visitor visits any methods with annotation `@Important`, we record the field related to the method and modify any bytecode as we wish. Here we simply print any important methods' index of parameter that we care:
 
 ```java
     System.out.println(methodName);
@@ -128,7 +125,7 @@ ASM palys role here, when visitor visits any methods with annotation `@Important
 ```
 How do we know what to put in the visitor methods? As we mentioned above the ASMifier can let us know what ASM code needed to generate the target code.
 
-Notice that the process only happens when we first time load the method, so that the method name will only print once while the parameter index will print many times because we have already modified its bytecode in the method.
+Notice that the process only happens when we first time load the method, so that the method name will only print once while the parameter index will print many times, since we have already modified its bytecode in the method, whenever the method is invoked the important parameter index will also be printed. That will be a basic instrumentation by using ASM.
 
 ```
 $ java -cp workspace/asm-all-5.2.jar -javaagent:ASM.jar BankTransactions
