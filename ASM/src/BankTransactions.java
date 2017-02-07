@@ -14,13 +14,14 @@ public class BankTransactions {
 	}
 	
 	private void unimportantProcessing(String accountId) {
-		//System.out.println(accountId);
+		// Unimportant Processing
 	}
 
 	@ImportantLog(fields = { "1", "2" })
 	public void login(String password, String accountId, String userName) {
 	    // login logic
 	}
+	
 	@ImportantLog(fields = { "0", "1" })
 	public void withdraw(String accountId, Double moneyToRemove) {
 	    // transaction logic

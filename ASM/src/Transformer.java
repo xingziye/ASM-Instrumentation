@@ -15,8 +15,8 @@ public class Transformer implements ClassFileTransformer {
 		if ("BankTransactions".equals(className)) {
 			ClassReader reader = new ClassReader(classfileBuffer);
 			ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES);
-			//ClassVisitor visitor = new LogMethodClassVisitor(writer, className);
-			reader.accept(writer, 0);
+			ClassVisitor visitor = new LogMethodClassVisitor(writer, className);
+			reader.accept(visitor, 0);
 			return writer.toByteArray();
 		}
 		
